@@ -47,6 +47,8 @@ namespace stypox {
 
 		value_type& operator*() const;
 		value_type* operator->() const;
+
+		bool operator==(nullptr_t) const;
 	};
 
 	template<class T>
@@ -139,6 +141,11 @@ namespace stypox {
 	template<class T>
 	auto M_StockContainerIterator<T>::operator->() const -> value_type* {
 		return &m_data->value;
+	}
+
+	template<class T>
+	bool M_StockContainerIterator<T>::operator==(nullptr_t) const {
+		return m_data == nullptr;
 	}
 
 

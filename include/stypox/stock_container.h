@@ -34,7 +34,6 @@ namespace stypox {
 		M_StockContainerHandler(data_type* data);
 
 		void update(data_type* data);
-		void makeInvalid();
 
 	public:
 		M_StockContainerHandler(const M_StockContainerHandler<value_type>& other) = delete;
@@ -44,6 +43,7 @@ namespace stypox {
 		M_StockContainerHandler& operator=(M_StockContainerHandler<value_type>&& other);
 
 		~M_StockContainerHandler();
+		void remove();
 
 		value_type& operator*() const;
 		value_type* operator->() const;
@@ -105,10 +105,6 @@ namespace stypox {
 	void M_StockContainerHandler<T>::update(data_type* data) {
 		m_data = data;
 	}
-	template<class T>
-	void M_StockContainerHandler<T>::makeInvalid() {
-		m_data = nullptr;
-	}
 
 	template<class T>
 	M_StockContainerHandler<T>::M_StockContainerHandler(M_StockContainerHandler<value_type>&& other) :
@@ -131,6 +127,14 @@ namespace stypox {
 		if (m_data) {
 			m_data->value.~value_type();
 			m_data->iter = nullptr;
+		}
+	}
+	template<class T>
+	void M_StockContainerHandler<T>::remove() {
+		if (m_data) {
+			m_data->value.~value_type();
+			m_data->iter = nullptr;
+			m_data = nullptr;
 		}
 	}
 
@@ -187,27 +191,33 @@ namespace stypox {
 	StockContainer<T>::StockContainer(StockContainer&& other) :
 		m_first{other.m_first}, m_space{other.m_space},
 		m_onePastLast{other.m_onePastLast} {
-		// other.m_space = other.m_onePastLast = nullptr
+		// other.m_onePastLast = nullptr
 		// ^ this is not done since the other container will not be used anymore
-		other.m_first = nullptr;
+		// and the destructor only needs m_first and m_space
+		other.m_first = other.m_space = nullptr;
 	}
 
 	template<class T>
 	auto StockContainer<T>::operator=(StockContainer&& other) -> StockContainer& {
-		std::free(m_first);
+		this->~StockContainer();
 
 		m_first = other.m_first;
 		m_space = other.m_space;
 		m_onePastLast = other.m_onePastLast;
 
-		// other.m_space = other.m_onePastLast = nullptr
+		// other.m_onePastLast = nullptr
 		// ^ this is not done since the other container will not be used anymore
-		other.m_first = nullptr;
+		// and the destructor only needs m_first and m_space
+		other.m_first = other.m_space = nullptr;
 		return *this;
 	}
 
 	template<class T>
 	StockContainer<T>::~StockContainer() {
+		for (data_type* i = m_first; i < m_space; ++i) {
+			if (i->iter)
+				i->iter->remove();
+		}
 		std::free(m_first);
 	}
 

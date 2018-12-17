@@ -9,20 +9,20 @@ namespace stypox {
 	template<class T>
 	class StockContainer;
 	template<class T>
-	class M_StockContainerIterator;
+	class M_StockContainerHandler;
 
 	template<class T>
 	class M_StockContainerData {
 		friend class StockContainer<T>;
-		friend class M_StockContainerIterator<T>;
+		friend class M_StockContainerHandler<T>;
 
-		M_StockContainerIterator<T>* iter;
+		M_StockContainerHandler<T>* iter;
 	public:
 		T value;
 	};
 
 	template<class T>
-	class M_StockContainerIterator {
+	class M_StockContainerHandler {
 		friend class StockContainer<T>;
 	public:
 		using value_type = T;
@@ -31,19 +31,19 @@ namespace stypox {
 
 		data_type* m_data;
 
-		M_StockContainerIterator(data_type* data);
+		M_StockContainerHandler(data_type* data);
 
 		void update(data_type* data);
 		void makeInvalid();
 
 	public:
-		M_StockContainerIterator(const M_StockContainerIterator<value_type>& other) = delete;
-		M_StockContainerIterator(M_StockContainerIterator<value_type>&& other);
+		M_StockContainerHandler(const M_StockContainerHandler<value_type>& other) = delete;
+		M_StockContainerHandler(M_StockContainerHandler<value_type>&& other);
 
-		M_StockContainerIterator& operator=(const M_StockContainerIterator<value_type>& other) = delete;
-		M_StockContainerIterator& operator=(M_StockContainerIterator<value_type>&& other);
+		M_StockContainerHandler& operator=(const M_StockContainerHandler<value_type>& other) = delete;
+		M_StockContainerHandler& operator=(M_StockContainerHandler<value_type>&& other);
 
-		~M_StockContainerIterator();
+		~M_StockContainerHandler();
 
 		value_type& operator*() const;
 		value_type* operator->() const;
@@ -55,7 +55,7 @@ namespace stypox {
 	class StockContainer {
 	public:
 		using value_type = T;
-		using iterator = M_StockContainerIterator<value_type>;
+		using iterator = M_StockContainerHandler<value_type>;
 	private:
 		using data_type = M_StockContainerData<value_type>;
 
@@ -96,30 +96,30 @@ namespace stypox {
 	};
 
 	template<class T>
-	M_StockContainerIterator<T>::M_StockContainerIterator(data_type* data) :
+	M_StockContainerHandler<T>::M_StockContainerHandler(data_type* data) :
 		m_data{data} {
 		m_data->iter = this;
 	}
 
 	template<class T>
-	void M_StockContainerIterator<T>::update(data_type* data) {
+	void M_StockContainerHandler<T>::update(data_type* data) {
 		m_data = data;
 	}
 	template<class T>
-	void M_StockContainerIterator<T>::makeInvalid() {
+	void M_StockContainerHandler<T>::makeInvalid() {
 		m_data = nullptr;
 	}
 
 	template<class T>
-	M_StockContainerIterator<T>::M_StockContainerIterator(M_StockContainerIterator<value_type>&& other) :
+	M_StockContainerHandler<T>::M_StockContainerHandler(M_StockContainerHandler<value_type>&& other) :
 		m_data{other.m_data} {
 		other.m_data = nullptr;
 		m_data->iter = this;
 	}
 	
 	template<class T>
-	auto M_StockContainerIterator<T>::operator=(M_StockContainerIterator<value_type>&& other) -> M_StockContainerIterator& {
-		this->~M_StockContainerIterator();
+	auto M_StockContainerHandler<T>::operator=(M_StockContainerHandler<value_type>&& other) -> M_StockContainerHandler& {
+		this->~M_StockContainerHandler();
 		m_data = other.m_data;
 		other.m_data = nullptr;
 		m_data->iter = this;
@@ -127,7 +127,7 @@ namespace stypox {
 	}
 
 	template<class T>
-	M_StockContainerIterator<T>::~M_StockContainerIterator() {
+	M_StockContainerHandler<T>::~M_StockContainerHandler() {
 		if (m_data) {
 			m_data->value.~value_type();
 			m_data->iter = nullptr;
@@ -135,16 +135,16 @@ namespace stypox {
 	}
 
 	template<class T>
-	auto M_StockContainerIterator<T>::operator*() const -> value_type& {
+	auto M_StockContainerHandler<T>::operator*() const -> value_type& {
 		return m_data->value;
 	}
 	template<class T>
-	auto M_StockContainerIterator<T>::operator->() const -> value_type* {
+	auto M_StockContainerHandler<T>::operator->() const -> value_type* {
 		return &m_data->value;
 	}
 
 	template<class T>
-	bool M_StockContainerIterator<T>::operator==(nullptr_t) const {
+	bool M_StockContainerHandler<T>::operator==(nullptr_t) const {
 		return m_data == nullptr;
 	}
 

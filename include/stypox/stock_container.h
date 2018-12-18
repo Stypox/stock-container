@@ -105,6 +105,8 @@ namespace stypox {
 		using value_type = T;
 		using iterator = M_StockContainerIterator<value_type>;
 		using const_iterator = const M_StockContainerIterator<value_type>;
+		using reverse_iterator = std::reverse_iterator<iterator>;
+		using reverse_const_iterator = std::reverse_iterator<const_iterator>;
 		using handler = M_StockContainerHandler<value_type>;
 	private:
 		using data_type = M_StockContainerData<value_type>;
@@ -150,6 +152,13 @@ namespace stypox {
 		iterator end() { return m_space; }
 		const_iterator end() const { return m_space; }
 		const_iterator cend() const { return m_space; }
+
+		reverse_iterator rbegin() { return reverse_iterator{m_space}; }
+		reverse_const_iterator rbegin() const { return reverse_const_iterator{m_space}; }
+		reverse_const_iterator crbegin() const { return reverse_const_iterator{m_space}; }
+		reverse_iterator rend() { return reverse_iterator{m_first}; }
+		reverse_const_iterator rend() const { return reverse_const_iterator{m_first}; }
+		reverse_const_iterator crend() const { return reverse_const_iterator{m_first}; }
 	};
 
 	template<class T>

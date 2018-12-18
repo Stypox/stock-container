@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <new>
+#include <iterator>
 
 namespace stypox {
 	template<class T>

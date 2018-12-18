@@ -78,9 +78,9 @@ namespace stypox {
 
 		data_type* m_data;
 
-		M_StockContainerHandler(data_type* data);
+		M_StockContainerHandler(data_type* data) : m_data{data} { m_data->iter = this; }
 
-		void update(data_type* data);
+		void update(data_type* data) { m_data = data; }
 
 	public:
 		M_StockContainerHandler(const M_StockContainerHandler<value_type>& other) = delete;
@@ -92,12 +92,12 @@ namespace stypox {
 		~M_StockContainerHandler();
 		void remove();
 
-		value_type& operator*() const;
-		value_type* operator->() const;
+		value_type& operator*() const { return m_data->value; }
+		value_type* operator->() const { return &m_data->value; }
 
-		bool operator==(nullptr_t) const;
-		bool operator!=(nullptr_t) const;
-		operator bool() const;
+		bool operator==(nullptr_t) const { return m_data == nullptr; }
+		bool operator!=(nullptr_t) const { return m_data != nullptr; }
+		operator bool() const { return m_data != nullptr; }
 	};
 
 	template<class T>
@@ -121,7 +121,7 @@ namespace stypox {
 
 		void updateAllIterators();
 	public:
-		StockContainer();
+		StockContainer() : m_first{nullptr}, m_space{nullptr}, m_onePastLast{nullptr} {}
 		StockContainer(const StockContainer& other) = delete;
 		StockContainer(StockContainer&& other);
 
@@ -136,11 +136,11 @@ namespace stypox {
 		template<class... Args>
 		handler emplace(Args&&... value);
 
-		data_type* data() const;
+		data_type* data() const { return m_first; }
 
-		bool empty() const;
-		size_t size() const;
-		size_t capacity() const;
+		bool empty() const { return m_space == m_first; }
+		size_t size() const { return m_space - m_first; }
+		size_t capacity() const { return m_onePastLast - m_first; }
 		size_t used() const;
 
 		void reserve(size_t newSize);
@@ -161,17 +161,6 @@ namespace stypox {
 		reverse_const_iterator rend() const { return reverse_const_iterator{m_first}; }
 		reverse_const_iterator crend() const { return reverse_const_iterator{m_first}; }
 	};
-
-	template<class T>
-	M_StockContainerHandler<T>::M_StockContainerHandler(data_type* data) :
-		m_data{data} {
-		m_data->iter = this;
-	}
-
-	template<class T>
-	void M_StockContainerHandler<T>::update(data_type* data) {
-		m_data = data;
-	}
 
 	template<class T>
 	M_StockContainerHandler<T>::M_StockContainerHandler(M_StockContainerHandler<value_type>&& other) :
@@ -205,28 +194,6 @@ namespace stypox {
 		}
 	}
 
-	template<class T>
-	auto M_StockContainerHandler<T>::operator*() const -> value_type& {
-		return m_data->value;
-	}
-	template<class T>
-	auto M_StockContainerHandler<T>::operator->() const -> value_type* {
-		return &m_data->value;
-	}
-
-	template<class T>
-	bool M_StockContainerHandler<T>::operator==(nullptr_t) const {
-		return m_data == nullptr;
-	}
-	template<class T>
-	bool M_StockContainerHandler<T>::operator!=(nullptr_t) const {
-		return m_data != nullptr;
-	}	
-	template<class T>
-	M_StockContainerHandler<T>::operator bool() const {
-		return m_data != nullptr;
-	}
-
 
 
 	template<class T>
@@ -256,11 +223,6 @@ namespace stypox {
 				i->iter->update(i);
 		}
 	}
-
-	template<class T>
-	StockContainer<T>::StockContainer() :
-		m_first{nullptr}, m_space{nullptr},
-		m_onePastLast{nullptr} {}
 
 	template<class T>
 	StockContainer<T>::StockContainer(StockContainer&& other) :
@@ -354,23 +316,6 @@ namespace stypox {
 		}
 	}
 
-	template<class T>
-	auto StockContainer<T>::data() const -> data_type* {
-		return m_first;
-	}	
-
-	template<class T>
-	bool StockContainer<T>::empty() const {
-		return m_space == m_first;
-	}
-	template<class T>
-	size_t StockContainer<T>::size() const {
-		return m_space - m_first;
-	}
-	template<class T>
-	size_t StockContainer<T>::capacity() const {
-		return m_onePastLast - m_first;
-	}
 	template<class T>
 	size_t StockContainer<T>::used() const {
 		size_t counter = 0;

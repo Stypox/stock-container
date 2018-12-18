@@ -103,7 +103,7 @@ namespace stypox {
 	class StockContainer {
 	public:
 		using value_type = T;
-		using iterator = M_StockContainerHandler<value_type>;
+		using handler = M_StockContainerHandler<value_type>;
 	private:
 		using data_type = M_StockContainerData<value_type>;
 
@@ -125,11 +125,11 @@ namespace stypox {
 
 		~StockContainer();
 
-		iterator push(const value_type& value);
-		iterator push(value_type&& value);
+		handler push(const value_type& value);
+		handler push(value_type&& value);
 
 		template<class... Args>
-		iterator emplace(Args&&... value);
+		handler emplace(Args&&... value);
 
 		data_type* data() const;
 
@@ -278,12 +278,12 @@ namespace stypox {
 	}
 
 	template<class T>
-	auto StockContainer<T>::push(const value_type& value) -> iterator {
+	auto StockContainer<T>::push(const value_type& value) -> handler {
 		growIfNeeded();
 
 		new(static_cast<void*>(&m_space->value)) value_type(value);
 
-		return iterator{m_space++};
+		return handler{m_space++};
 	}
 
 	template<class T>

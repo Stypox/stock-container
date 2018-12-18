@@ -56,6 +56,7 @@ namespace stypox {
 		M_StockContainerIterator& operator-=(difference_type n) { m_pointer -= n; return *this; }
 
 		M_StockContainerIterator operator+(difference_type n) const { return m_pointer + n; }
+		friend M_StockContainerIterator operator+(difference_type n, const M_StockContainerIterator& iter) { return iter.m_pointer + n; }
 		M_StockContainerIterator operator-(difference_type n) const { return m_pointer - n; }
 		difference_type operator-(const M_StockContainerIterator& other) const { return m_pointer - other.m_pointer; }
 

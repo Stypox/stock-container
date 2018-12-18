@@ -261,9 +261,21 @@ namespace stypox {
 	template<class T>
 	auto StockContainer<T>::push(const value_type& value) -> handler {
 		growIfNeeded();
+		new(static_cast<void*>(&m_space->value)) value_type{value};
+		return handler{m_space++};
+	}
+	template<class T>
+	auto StockContainer<T>::push(value_type&& value) -> handler {
+		growIfNeeded();
+		new(static_cast<void*>(&m_space->value)) value_type{value};
+		return handler{m_space++};
+	}
 
-		new(static_cast<void*>(&m_space->value)) value_type(value);
-
+	template<class T>
+	template<class... Args>
+	auto StockContainer<T>::emplace(Args&&... value) -> handler {
+		growIfNeeded();
+		new(static_cast<void*>(&m_space->value)) value_type{value...};
 		return handler{m_space++};
 	}
 

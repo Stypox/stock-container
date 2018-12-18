@@ -49,6 +49,8 @@ namespace stypox {
 		value_type* operator->() const;
 
 		bool operator==(nullptr_t) const;
+		bool operator!=(nullptr_t) const;
+		operator bool() const;
 	};
 
 	template<class T>
@@ -150,6 +152,14 @@ namespace stypox {
 	template<class T>
 	bool M_StockContainerHandler<T>::operator==(nullptr_t) const {
 		return m_data == nullptr;
+	}
+	template<class T>
+	bool M_StockContainerHandler<T>::operator!=(nullptr_t) const {
+		return m_data != nullptr;
+	}	
+	template<class T>
+	M_StockContainerHandler<T>::operator bool() const {
+		return m_data != nullptr;
 	}
 
 

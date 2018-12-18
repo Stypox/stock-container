@@ -103,6 +103,8 @@ namespace stypox {
 	class StockContainer {
 	public:
 		using value_type = T;
+		using iterator = M_StockContainerIterator<value_type>;
+		using const_iterator = const M_StockContainerIterator<value_type>;
 		using handler = M_StockContainerHandler<value_type>;
 	private:
 		using data_type = M_StockContainerData<value_type>;
@@ -141,6 +143,13 @@ namespace stypox {
 		void reserve(size_t newSize);
 		void shrink_to_fit();
 		void squash();
+
+		iterator begin() { return m_first; }
+		const_iterator begin() const { return m_first; }
+		const_iterator cbegin() const { return m_first; }
+		iterator end() { return m_space; }
+		const_iterator end() const { return m_space; }
+		const_iterator cend() const { return m_space; }
 	};
 
 	template<class T>

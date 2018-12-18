@@ -22,6 +22,51 @@ namespace stypox {
 	};
 
 	template<class T>
+	class M_StockContainerIterator {
+		friend class StockContainer<T>;
+	public:
+		using value_type = T;
+		using difference_type = ptrdiff_t;
+		using pointer = value_type*;
+		using reference = value_type&;
+		using iterator_category = std::random_access_iterator_tag;
+	private:
+		using data_type = M_StockContainerData<value_type>;
+
+		data_type* m_pointer;
+
+		M_StockContainerIterator(data_type* p) : m_pointer{p} {};
+	public:
+		M_StockContainerIterator(const M_StockContainerIterator&) = default;
+		M_StockContainerIterator(M_StockContainerIterator&&) = default;
+		M_StockContainerIterator& operator=(const M_StockContainerIterator&) = default;
+		M_StockContainerIterator& operator=(M_StockContainerIterator&&) = default;
+
+		reference operator*() const { return m_pointer->value; }
+		pointer operator->() const { return &m_pointer->value; }
+		reference operator[](difference_type n) const { return m_pointer[n].value; }
+
+		M_StockContainerIterator& operator++() { ++m_pointer; return *this; }
+		M_StockContainerIterator operator++(int) { return m_pointer++; }
+		M_StockContainerIterator& operator--() { --m_pointer; return *this; }
+		M_StockContainerIterator operator--(int) { return m_pointer--; }
+
+		M_StockContainerIterator& operator+=(difference_type n) { m_pointer += n; return *this; }
+		M_StockContainerIterator& operator-=(difference_type n) { m_pointer -= n; return *this; }
+
+		M_StockContainerIterator operator+(difference_type n) const { return m_pointer + n; }
+		M_StockContainerIterator operator-(difference_type n) const { return m_pointer - n; }
+		difference_type operator-(const M_StockContainerIterator& other) const { return m_pointer - other.m_pointer; }
+
+		bool operator==(const M_StockContainerIterator& other) const { return m_pointer == other.m_pointer; }
+		bool operator!=(const M_StockContainerIterator& other) const { return m_pointer != other.m_pointer; }
+		bool operator<(const M_StockContainerIterator& other) const { return m_pointer < other.m_pointer; }
+		bool operator>(const M_StockContainerIterator& other) const { return m_pointer > other.m_pointer; }
+		bool operator<=(const M_StockContainerIterator& other) const { return m_pointer <= other.m_pointer; }
+		bool operator>=(const M_StockContainerIterator& other) const { return m_pointer >= other.m_pointer; }
+	};
+
+	template<class T>
 	class M_StockContainerHandler {
 		friend class StockContainer<T>;
 	public:

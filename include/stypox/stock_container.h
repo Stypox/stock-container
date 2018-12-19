@@ -158,6 +158,13 @@ namespace stypox {
 		value_type& back() { return m_space[-1].value; }
 		value_type& front() { return m_first->value; }
 
+		bool operator==(const StockContainer<value_type>& other) const { return std::equal(begin(), end(), other.begin(), other.end()); }
+		bool operator!=(const StockContainer<value_type>& other) const { return !(*this == other); }
+		bool operator<(const StockContainer<value_type>& other) const { return std::lexicographical_compare(begin(), end(), other.begin(), other.end()); }
+		bool operator<=(const StockContainer<value_type>& other) const { return !(other < *this); }
+		bool operator>(const StockContainer<value_type>& other) const { return other < *this; }
+		bool operator>=(const StockContainer<value_type>& other) const { return !(*this < other); }
+
 		iterator begin() { return m_first; }
 		const_iterator begin() const { return m_first; }
 		const_iterator cbegin() const { return m_first; }

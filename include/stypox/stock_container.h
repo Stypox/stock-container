@@ -329,13 +329,11 @@ namespace stypox {
 		data_type* fromBeginning = m_first, * fromEnd = m_space - 1;
 
 		while (1) {
-			if (fromBeginning == m_onePastLast) {
-				m_space = m_onePastLast;
+			if (fromBeginning == m_space)
 				return;
-			}
 			if (!fromBeginning->iter) {
 				while (1) {
-					if (fromEnd == fromBeginning) {
+					if (fromBeginning == fromEnd) {
 						m_space = fromBeginning;
 						return;
 					}
@@ -345,7 +343,7 @@ namespace stypox {
 						fromBeginning->iter->update(fromBeginning);
 
 						--fromEnd;
-						if (fromEnd == fromBeginning) {
+						if (fromBeginning == fromEnd) {
 							m_space = fromBeginning + 1;
 							return;
 						}

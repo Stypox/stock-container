@@ -155,6 +155,8 @@ namespace stypox {
 
 		value_type& operator[](size_type n) { return m_first[n].value; }
 		value_type& at(size_type n) { if (n >= size()) throw std::out_of_range{"stypox::StockContainer::at()"}; return m_first[n].value; }
+		value_type& back() { return m_space[-1].value; }
+		value_type& front() { return m_first->value; }
 
 		iterator begin() { return m_first; }
 		const_iterator begin() const { return m_first; }

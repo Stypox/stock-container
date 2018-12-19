@@ -138,9 +138,9 @@ namespace stypox {
 
 		handler push(const value_type& value);
 		handler push(value_type&& value);
-
 		template<class... Args>
 		handler emplace(Args&&... value);
+		void clear();
 
 		data_type* data() const { return m_first; }
 
@@ -288,13 +288,20 @@ namespace stypox {
 		new(static_cast<void*>(&m_space->value)) value_type{value};
 		return handler{m_space++};
 	}
-
 	template<class T>
 	template<class... Args>
 	auto StockContainer<T>::emplace(Args&&... value) -> handler {
 		growIfNeeded();
 		new(static_cast<void*>(&m_space->value)) value_type{value...};
 		return handler{m_space++};
+	}
+	template<class T>	
+	void StockContainer<T>::clear() {
+		for (data_type* i = m_first; i < m_space; ++i) {
+			if (i->iter)
+				i->iter->remove();
+		}
+		m_space = m_first;
 	}
 
 	template<class T>

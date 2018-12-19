@@ -104,6 +104,12 @@ namespace stypox {
 	class StockContainer {
 	public:
 		using value_type = T;
+		using size_type = size_t;
+		using difference_type = ptrdiff_t;
+		using reference = value_type&;
+		using const_reference = const value_type&;
+		using pointer = value_type*;
+		using const_pointer = typename std::pointer_traits<pointer>::template rebind<const value_type>;
 		using iterator = M_StockContainerIterator<value_type>;
 		using const_iterator = const M_StockContainerIterator<value_type>;
 		using reverse_iterator = std::reverse_iterator<iterator>;
@@ -116,7 +122,7 @@ namespace stypox {
 				 * m_space,
 				 * m_onePastLast;
 
-		void reserveWithoutChecking(size_t newSize);
+		void reserveWithoutChecking(size_type newSize);
 		void growIfNeeded();
 
 		void updateAllIterators();
@@ -139,16 +145,16 @@ namespace stypox {
 		data_type* data() const { return m_first; }
 
 		bool empty() const { return m_space == m_first; }
-		size_t size() const { return m_space - m_first; }
-		size_t capacity() const { return m_onePastLast - m_first; }
-		size_t used() const;
+		size_type size() const { return m_space - m_first; }
+		size_type capacity() const { return m_onePastLast - m_first; }
+		size_type used() const;
 
-		void reserve(size_t newSize);
+		void reserve(size_type newSize);
 		void shrink_to_fit();
 		void squash();
 
-		value_type& operator[](size_t n) { return m_first[n].value; }
-		value_type& at(size_t n) { if (n >= size()) throw std::out_of_range{"stypox::StockContainer::at()"}; return m_first[n].value; }
+		value_type& operator[](size_type n) { return m_first[n].value; }
+		value_type& at(size_type n) { if (n >= size()) throw std::out_of_range{"stypox::StockContainer::at()"}; return m_first[n].value; }
 
 		iterator begin() { return m_first; }
 		const_iterator begin() const { return m_first; }
@@ -200,8 +206,8 @@ namespace stypox {
 
 
 	template<class T>
-	void StockContainer<T>::reserveWithoutChecking(size_t newCapacity) {
-		size_t oldSize = size();
+	void StockContainer<T>::reserveWithoutChecking(size_type newCapacity) {
+		size_type oldSize = size();
 
 		m_first = static_cast<data_type*>(std::realloc(m_first, newCapacity * sizeof(data_type)));
 		std::memset(m_first + oldSize, 0, (newCapacity - oldSize) * sizeof(data_type));
@@ -283,13 +289,13 @@ namespace stypox {
 	}
 
 	template<class T>
-	void StockContainer<T>::reserve(size_t newCapacity) {
+	void StockContainer<T>::reserve(size_type newCapacity) {
 		if (newCapacity > capacity())
 			reserveWithoutChecking(newCapacity);
 	}
 	template<class T>
 	void StockContainer<T>::shrink_to_fit() {
-		if (size_t newCapacity = size(); newCapacity) {
+		if (size_type newCapacity = size(); newCapacity) {
 			m_first = static_cast<data_type*>(std::realloc(m_first, newCapacity * sizeof(data_type)));
 
 			m_space = m_onePastLast = m_first + newCapacity;
@@ -332,8 +338,8 @@ namespace stypox {
 	}
 
 	template<class T>
-	size_t StockContainer<T>::used() const {
-		size_t counter = 0;
+	auto StockContainer<T>::used() const -> size_type {
+		size_type counter = 0;
 		for (data_type* i = m_first; i < m_space; ++i) {
 			if (i->iter)
 				++counter;

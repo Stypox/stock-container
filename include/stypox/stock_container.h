@@ -142,6 +142,11 @@ namespace stypox {
 		handler emplace(Args&&... value);
 		void clear();
 
+		std::vector<handler> append(size_type count, const value_type& value);
+		template<class InputIt>
+		std::vector<handler> append(InputIt first, InputIt last);
+		std::vector<handler> append(std::initializer_list<value_type> ilist) { return append(ilist.begin(), ilist.end()); }
+
 		data_type* data() const { return m_first; }
 
 		bool empty() const { return m_space == m_first; }
@@ -309,6 +314,32 @@ namespace stypox {
 				i->iter->remove();
 		}
 		m_space = m_first;
+	}
+
+	template<class T>
+	auto StockContainer<T>::append(size_type count, const value_type& value) -> std::vector<handler> {
+		reserveWithoutChecking(size() + count);
+
+		std::vector<handler> result;
+		for (size_type c = 0; c < count; ++c, ++m_space) {			
+			new(static_cast<void*>(&m_space->value)) value_type{value};
+			result.emplace_back(handler{m_space});
+		}
+
+		return result;
+	}
+	template<class T>
+	template<class InputIt>
+	auto StockContainer<T>::append(InputIt first, InputIt last) -> std::vector<handler> {
+		reserveWithoutChecking(size() + (last - first));
+
+		std::vector<handler> result;
+		for (; first != last; ++first, ++m_space) {			
+			new(static_cast<void*>(&m_space->value)) value_type{*first};
+			result.push_back(handler{m_space});
+		}
+
+		return result;
 	}
 
 	template<class T>

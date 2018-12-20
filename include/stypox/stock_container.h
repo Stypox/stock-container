@@ -163,6 +163,8 @@ namespace stypox {
 		std::vector<handler> assign(InputIt first, InputIt last);
 		std::vector<handler> assign(std::initializer_list<value_type> ilist) { return assign(ilist.begin(), ilist.end()); }
 
+		void swap(StockContainer<value_type>& other);
+
 		bool operator==(const StockContainer<value_type>& other) const { return std::equal(begin(), end(), other.begin(), other.end()); }
 		bool operator!=(const StockContainer<value_type>& other) const { return !(*this == other); }
 		bool operator<(const StockContainer<value_type>& other) const { return std::lexicographical_compare(begin(), end(), other.begin(), other.end()); }
@@ -382,6 +384,21 @@ namespace stypox {
 		}
 
 		return result;
+	}
+
+	template<class T>
+	void StockContainer<T>::swap(StockContainer<value_type>& other) {
+		data_type* tmp = m_first;
+		m_first = other.m_first;
+		other.m_first = tmp;
+
+		tmp = m_space;
+		m_space = other.m_space;
+		other.m_space = tmp;
+
+		tmp = m_onePastLast;
+		m_onePastLast = other.m_onePastLast;
+		other.m_onePastLast = tmp;
 	}
 
 	template<class T>

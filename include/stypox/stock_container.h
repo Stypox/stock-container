@@ -140,7 +140,6 @@ namespace stypox {
 		handler push(value_type&& value);
 		template<class... Args>
 		handler emplace(Args&&... value);
-		void clear();
 
 		std::vector<handler> append(size_type count, const value_type& value);
 		template<class InputIt>
@@ -162,11 +161,6 @@ namespace stypox {
 		value_type& at(size_type n) { if (n >= size()) throw std::out_of_range{"stypox::StockContainer::at()"}; return m_first[n].value; }
 		value_type& back() { return m_space[-1].value; }
 		value_type& front() { return m_first->value; }
-
-		std::vector<handler> assign(size_type count, const value_type& value);
-		template<class InputIt>
-		std::vector<handler> assign(InputIt first, InputIt last);
-		std::vector<handler> assign(std::initializer_list<value_type> ilist) { return assign(ilist.begin(), ilist.end()); }
 
 		void swap(StockContainer<value_type>& other);
 
@@ -309,14 +303,6 @@ namespace stypox {
 		new(static_cast<void*>(&m_space->value)) value_type{value...};
 		return handler{m_space++};
 	}
-	template<class T>	
-	void StockContainer<T>::clear() {
-		for (data_type* i = m_first; i < m_space; ++i) {
-			if (i->iter)
-				i->iter->remove();
-		}
-		m_space = m_first;
-	}
 
 	template<class T>
 	auto StockContainer<T>::append(size_type count, const value_type& value) -> std::vector<handler> {
@@ -389,34 +375,6 @@ namespace stypox {
 			}
 			++fromBeginning;
 		}
-	}
-
-	template<class T>
-	auto StockContainer<T>::assign(size_type count, const value_type& value) -> std::vector<handler> {
-		clear();
-		reserveWithoutChecking(count);
-
-		std::vector<handler> result;
-		for (size_type c = 0; c < count; ++c, ++m_space) {			
-			new(static_cast<void*>(&m_space->value)) value_type{value};
-			result.emplace_back(handler{m_space});
-		}
-
-		return result;
-	}
-	template<class T>
-	template<class InputIt>
-	auto StockContainer<T>::assign(InputIt first, InputIt last) -> std::vector<handler> {
-		clear();
-		reserveWithoutChecking(last - first);
-
-		std::vector<handler> result;
-		for (; first != last; ++first, ++m_space) {			
-			new(static_cast<void*>(&m_space->value)) value_type{*first};
-			result.push_back(handler{m_space});
-		}
-
-		return result;
 	}
 
 	template<class T>

@@ -196,7 +196,8 @@ namespace stypox {
 	M_StockContainerHandler<T>::M_StockContainerHandler(M_StockContainerHandler<value_type>&& other) :
 		m_data{other.m_data} {
 		other.m_data = nullptr;
-		m_data->iter = this;
+		if (m_data)
+			m_data->iter = this;
 	}
 	
 	template<class T>
@@ -204,7 +205,8 @@ namespace stypox {
 		this->~M_StockContainerHandler();
 		m_data = other.m_data;
 		other.m_data = nullptr;
-		m_data->iter = this;
+		if (m_data)
+			m_data->iter = this;
 		return *this;
 	}
 

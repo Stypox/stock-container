@@ -105,7 +105,6 @@ namespace stypox {
 
 		void reserve(size_type newSize);
 		void shrink_to_fit();
-		void squash();
 
 		value_type& operator[](size_type n) { return m_first[n]; }
 		value_type& at(size_type n) { if (n >= size()) throw std::out_of_range{"stypox::StockContainer::at()"}; return m_first[n]; }

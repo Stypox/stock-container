@@ -142,7 +142,7 @@ namespace stypox {
 		if (m_value)
 			m_container->updateCorrespondingHandler(m_value, this);
 	}
-	
+
 	template<class T>
 	auto M_StockContainerHandler<T>::operator=(M_StockContainerHandler<value_type>&& other) -> M_StockContainerHandler& {
 		this->~M_StockContainerHandler();
@@ -232,7 +232,7 @@ namespace stypox {
 		m_space = other.m_space;
 		m_onePastLast = other.m_onePastLast;
 		m_firstHandler = other.m_firstHandler;
-		
+
 		updateIteratorContainer();
 
 		// other.m_onePastLast = nullptr

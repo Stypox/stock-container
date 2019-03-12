@@ -1,5 +1,5 @@
-#ifndef _STYPOX_STOCK_CONTAINER_H_
-#define _STYPOX_STOCK_CONTAINER_H_
+#ifndef _STYPOX_STOCK_CONTAINER_HPP_
+#define _STYPOX_STOCK_CONTAINER_HPP_
 
 #include <cstdlib>
 #include <cstring>
